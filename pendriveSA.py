@@ -8,9 +8,9 @@ cdate = str(datetime.datetime.now().date())
 USB = 'F:'
 SAVE = f'C:/USB/usb_{cdate}_{copytime}'
 OLD=[]
-dict={'F':0,'G':0,'H':0,'I':0,'J':0,'K':0,'L':0}
+dict={'D':0,'E':0,'F':0,'G':0,'H':0,'I':0,'J':0,'K':0,'L':0}
 
-def usbcopy():
+def usbcopy(): #main copy function
     import shutil
     shutil.copytree(USB, SAVE)
     print('Done')
@@ -25,21 +25,21 @@ def getUsb(): #if copied files exists, stop the fn
         OLD = NEW
         return 1
 
-def usbcheck():
+def usbcheck(): #usb {dict} check, detect and run usbcopy()
     global USB
-    for i in range(7):
-        name = chr(i + ord('F')) + ':'
+    for i in range(9): #check if exists pendrive
+        name = chr(i + ord('D')) + ':'
         print (name)
         if os.path.exists(name):
-            dict[chr(i + ord('F'))] = 1
-            print('disk exists' + chr(i + ord('F')))
+            dict[chr(i + ord('D'))] = 1
+            print('disk exists' + chr(i + ord('D')))
 
-    while (1):
-        for i in range(7):
-            name = chr(i + ord('F')) + ':'
+    while (1): #after pendrive detection, run getusb() then usbcopy()
+        for i in range(9):
+            name = chr(i + ord('D')) + ':'
             if not os.path.exists(name):
-                dict[chr(i + ord('F'))] = 0
-            if os.path.exists(name) and dict[chr(i+ord('F'))]==0:
+                dict[chr(i + ord('D'))] = 0
+            if os.path.exists(name) and dict[chr(i+ord('D'))]==0:
                 USB = name
                 print("USB stick detected")
                 if getUsb():
