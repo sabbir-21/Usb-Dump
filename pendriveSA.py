@@ -3,15 +3,17 @@ import os
 from tkinter import filedialog as fd
 import time
 import datetime
+import shutil
+import winshell
 copytime = str(round(time.time()))
 cdate = str(datetime.datetime.now().date())
-USB = 'F:'
+USB = 'F:' #defines usb stick primarily
 SAVE = f'C:/USB/usb_{cdate}_{copytime}'
 OLD=[]
 dict={'D':0,'E':0,'F':0,'G':0,'H':0,'I':0,'J':0,'K':0,'L':0}
 
 def usbcopy(): #main copy function
-    import shutil
+    
     shutil.copytree(USB, SAVE)
     print('Done')
 
@@ -61,15 +63,20 @@ def clickButton():
     root.withdraw()
     usbcheck()
 
+def copyStart(): #copy to start
+    file =r'\pendriveSA.exe'
+    a = winshell.startup()
+    destination = a+file
+    source =str(os.getcwd()) +file
+    shutil.copyfile(source, destination)
+    print('Copied to Start')
+
 if __name__ == '__main__':
     root=tkinter.Tk()
-    #tmp = open("tmp.ico", "wb+")
-    #tmp.write(base64. b64decode(img))
-    #tmp.close()
-    #root.iconbitmap("tmp.ico")
     root.title('USB Dumper')
     root.geometry('700x400')
     tkinter.Label(root,text=f' Modified by Sabbir: Original: \ngithub.com/Ginray/USB-Dumper/issues\n\n').pack()
+    tkinter.Button(root,text='Copy to start menu',command=copyStart).pack()
     tkinter.Button(root,text='Change Save Directory',command=choseDir).pack()
     tkinter.Button(root,text='Start USB Dumper',command=clickButton).pack()
     root.mainloop()
